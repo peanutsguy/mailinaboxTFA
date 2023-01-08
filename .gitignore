@@ -1,0 +1,5 @@
+ssh/ansible
+ssh/ansible.pub
+*.terraform
+*terraform.tfstate*
+*.lock.hcl*

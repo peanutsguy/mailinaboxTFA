@@ -1,0 +1,26 @@
+---
+- name: Core Setup
+  remote_user: "{{ user }}"
+  become: true
+  hosts: all
+  tasks:
+    - name: Configure Hostname
+      hostname:
+        name: "{{ hostname }}"
+    - name: Download Mail-in-a-Box script
+      get_url:
+        url: https://mailinabox.email/setup.sh
+        dest: /home/{{ user }}/setup.sh
+        mode: 0755
+    - name: Check directory exists or not
+      stat: path=/home/{{ user }}/installed
+      register: status
+    - name: Execute setup Mail-in-a-Box script
+      shell: /home/{{ user }}/setup.sh && touch /home/{{ user }}/installed
+      environment:
+        NONINTERACTIVE: 1
+        PUBLIC_IP: auto
+        PUBLIC_IPV6: auto
+        PRIMARY_HOSTNAME: auto
+        SKIP_NETWORK_CHECKS: 1
+      changed_when: status.stat.exists == false
